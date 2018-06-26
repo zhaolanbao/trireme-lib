@@ -9,6 +9,7 @@ import (
 	"fmt"
 	"net"
 	"strconv"
+	"sync"
 
 	"go.uber.org/zap"
 )
@@ -26,11 +27,21 @@ var (
 	debugContextNet uint64
 )
 
+var bufPool = sync.Pool{
+	New: func() interface{} {
+		return make([]byte, 75*1024)
+	},
+}
+
+//var globalBuf []byte
+
 func init() {
 	PacketLogLevel = false
 	debugContext = 0
 	debugContextApp = 0 //PacketStageIncoming
 	debugContextNet = 0 //PacketStageOutgoing
+
+	//globalBuf = make([]byte, 4096)
 
 	cbuf := fmt.Sprintf(" Network:0x%04x Application:0x%04x",
 		PacketTypeNetwork,

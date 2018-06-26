@@ -118,9 +118,11 @@ func (p *Packet) computeTCPChecksum() uint16 {
 	var pseudoHeaderLen uint16 = 12
 	tcpSize := uint16(len(p.Buffer)) - p.l4BeginPos
 	bufLen := pseudoHeaderLen + tcpSize
-	buf := make([]byte, bufLen)
-
-	// Construct the pseudo-header for TCP checksum computation:
+	//buf := make([]byte, bufLen)
+	tmpbuf := bufPool.Get().([]byte)[:bufLen]
+	defer bufPool.Put(tmpbuf)
+	buf := tmpbuf[:bufLen]
+	// Construct the pseudo-header for TCP checksum computation:b
 
 	// bytes 0-3: Source IP address
 	copy(buf[0:4], p.Buffer[ipSourceAddrPos:ipSourceAddrPos+4])
@@ -136,8 +138,6 @@ func (p *Packet) computeTCPChecksum() uint16 {
 
 	// bytes 10,11: TCP buffer size (real header + payload)
 	binary.BigEndian.PutUint16(buf[10:12], tcpSize+uint16(len(p.tcpData)+len(p.tcpOptions)))
-
-	// bytes 12+: The TCP buffer (real header + payload)
 	copy(buf[12:], p.Buffer[p.l4BeginPos:])
 
 	// Set current checksum to zero (in buf, not changing packet)
@@ -168,17 +168,30 @@ func incCsum16(start, old, new uint16) uint16 {
 func checksumDelta(buf []byte) uint16 {
 
 	sum := uint32(0)
-
-	for ; len(buf) >= 2; buf = buf[2:] {
-		sum += uint32(buf[0])<<8 | uint32(buf[1])
+	length := len(buf)
+	for i := 0; i <= length-2; i = i + 2 {
+		sum += uint32(buf[i])<<8 | uint32(buf[i+1])
 	}
-	if len(buf) > 0 {
-		sum += uint32(buf[0]) << 8
+	if length&0x1 != 0 {
+		sum += uint32(buf[length-1]) << 8
 	}
 	for sum > 0xffff {
 		sum = (sum >> 16) + (sum & 0xffff)
 	}
 	return uint16(sum)
+
+	// sum := uint32(0)
+
+	// for ; len(buf) >= 2; buf = buf[2:] {
+	// 	sum += uint32(buf[0])<<8 | uint32(buf[1])
+	// }
+	// if len(buf) > 0 {
+	// 	sum += uint32(buf[0]) << 8
+	// }
+	// for sum > 0xffff {
+	// 	sum = (sum >> 16) + (sum & 0xffff)
+	// }
+	// return uint16(sum)
 }
 
 // Computes a checksum over the given slice.
