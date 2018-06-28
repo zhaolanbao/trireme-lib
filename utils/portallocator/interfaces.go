@@ -1,4 +1,4 @@
-package allocator
+package portallocator
 
 // Allocator is an allocator interface
 type Allocator interface {

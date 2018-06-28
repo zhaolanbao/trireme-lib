@@ -96,7 +96,9 @@ func SocketListener(port string, mark int) (net.Listener, error) {
 	if err = syscall.SetsockoptInt(fd, syscall.SOL_SOCKET, syscall.SO_REUSEADDR, 1); err != nil {
 		return nil, fmt.Errorf("cannot set SO_REUSEADDR: %s", err)
 	}
-
+	if err = syscall.SetsockoptInt(fd, syscall.SOL_SOCKET, 15, 1); err != nil {
+		return nil, fmt.Errorf("cannot set SO_REUSEPORT: %s", err)
+	}
 	if len(addr.IP) == 0 {
 		addr.IP = net.IPv4zero
 	}

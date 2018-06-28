@@ -9,14 +9,14 @@ import (
 	"go.aporeto.io/trireme-lib/common"
 	"go.aporeto.io/trireme-lib/controller/constants"
 	"go.aporeto.io/trireme-lib/controller/internal/enforcer"
-	"go.aporeto.io/trireme-lib/controller/internal/enforcer/proxy"
+	enforcerproxy "go.aporeto.io/trireme-lib/controller/internal/enforcer/proxy"
 	"go.aporeto.io/trireme-lib/controller/internal/enforcer/utils/rpcwrapper"
 	"go.aporeto.io/trireme-lib/controller/internal/supervisor"
-	"go.aporeto.io/trireme-lib/controller/internal/supervisor/proxy"
+	supervisorproxy "go.aporeto.io/trireme-lib/controller/internal/supervisor/proxy"
 	"go.aporeto.io/trireme-lib/controller/pkg/fqconfig"
 	"go.aporeto.io/trireme-lib/controller/pkg/packetprocessor"
 	"go.aporeto.io/trireme-lib/controller/pkg/secrets"
-	"go.aporeto.io/trireme-lib/utils/allocator"
+	"go.aporeto.io/trireme-lib/utils/portallocator"
 	"go.uber.org/zap"
 )
 
@@ -197,7 +197,7 @@ func newTrireme(c *config) TriremeController {
 
 	t := &trireme{
 		config:               c,
-		port:                 allocator.New(c.proxyPort, 100),
+		port:                 portallocator.New(c.proxyPort, 100),
 		rpchdl:               rpcwrapper.NewRPCWrapper(),
 		enforcers:            map[constants.ModeType]enforcer.Enforcer{},
 		supervisors:          map[constants.ModeType]supervisor.Supervisor{},

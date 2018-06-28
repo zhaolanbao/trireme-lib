@@ -10,13 +10,13 @@ import (
 	"go.aporeto.io/trireme-lib/common"
 	"go.aporeto.io/trireme-lib/controller/constants"
 	"go.aporeto.io/trireme-lib/controller/internal/enforcer"
-	"go.aporeto.io/trireme-lib/controller/internal/enforcer/proxy"
+	enforcerproxy "go.aporeto.io/trireme-lib/controller/internal/enforcer/proxy"
 	"go.aporeto.io/trireme-lib/controller/internal/enforcer/utils/rpcwrapper"
 	"go.aporeto.io/trireme-lib/controller/internal/supervisor"
 	"go.aporeto.io/trireme-lib/controller/pkg/fqconfig"
 	"go.aporeto.io/trireme-lib/controller/pkg/secrets"
 	"go.aporeto.io/trireme-lib/policy"
-	"go.aporeto.io/trireme-lib/utils/allocator"
+	"go.aporeto.io/trireme-lib/utils/portallocator"
 
 	"go.uber.org/zap"
 )
@@ -29,7 +29,7 @@ type trireme struct {
 	supervisors          map[constants.ModeType]supervisor.Supervisor
 	enforcers            map[constants.ModeType]enforcer.Enforcer
 	puTypeToEnforcerType map[common.PUType]constants.ModeType
-	port                 allocator.Allocator
+	port                 portallocator.Allocator
 	rpchdl               rpcwrapper.RPCClient
 	locks                sync.Map
 }
