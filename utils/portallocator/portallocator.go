@@ -27,8 +27,12 @@ func New(start, size int) Allocator {
 		size:     size,
 	}
 	//count := 0
-	zap.L().Debug("HERE :: Started Binding for reserving ports", zap.Time("Start", time.Now()))
+	zap.L().Debug("Started Binding for reserving ports", zap.Time("Start", time.Now()))
 	for i := start; len(a.allocate) < size; i++ {
+		if i > ((1 << 16) - 1) {
+			zap.L().Error("Could not reserve 100 ports for enforcerproxy")
+			return nil
+		}
 		addr, err := net.ResolveTCPAddr("tcp4", ":"+strconv.Itoa(i))
 
 		if err != nil {
@@ -67,7 +71,7 @@ func New(start, size int) Allocator {
 		a.allocate <- strconv.Itoa(i)
 
 	}
-	zap.L().Debug("HERE :: Done Binding for reserving ports", zap.Time("End", time.Now()), zap.Int("Length", len(a.allocate)))
+	zap.L().Debug("Done Binding for reserving ports", zap.Time("End", time.Now()), zap.Int("Reserved Ports", len(a.allocate)))
 	return a
 }
 
