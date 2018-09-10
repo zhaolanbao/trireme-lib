@@ -158,6 +158,7 @@ type FlowPolicy struct {
 	Action        ActionType
 	ServiceID     string
 	PolicyID      string
+	Labels        []string
 }
 
 // LogPrefix is the prefix used in nf-log action. It must be less than
@@ -242,6 +243,27 @@ type IPRule struct {
 // IPRuleList is a list of IP rules
 type IPRuleList []IPRule
 
+// DNSRule holds the dns names and the assicated ports
+type DNSRule struct {
+	Name     string
+	Port     string
+	Protocol string
+}
+
+// DNSRuleList is a list of DNS rules
+type DNSRuleList []DNSRule
+
+// Copy creates a clone of DNS rule list
+func (l DNSRuleList) Copy() DNSRuleList {
+	list := make(DNSRuleList, len(l))
+
+	for i, v := range l {
+		list[i] = v
+	}
+
+	return list
+}
+
 // Copy creates a clone of the IP rule list
 func (l IPRuleList) Copy() IPRuleList {
 	list := make(IPRuleList, len(l))
@@ -256,6 +278,7 @@ type KeyValueOperator struct {
 	Key      string
 	Value    []string
 	Operator Operator
+	ID       string
 }
 
 // TagSelector info describes a tag selector key Operator value
@@ -318,24 +341,4 @@ type OptionsType struct {
 
 	// PortMap maps container port -> host ports.
 	PortMap map[nat.Port][]string
-}
-
-// ProxiedServicesInfo holds the info for a proxied service.
-type ProxiedServicesInfo struct {
-	// PublicIPPortPair  is an array public ip,port  of load balancer or passthrough object per pu
-	PublicIPPortPair []string
-	// PrivateIPPortPair is an array of private ip,port of load balancer or passthrough object per pu
-	PrivateIPPortPair []string
-}
-
-// AddPublicIPPortPair add a ip port pair to proxied services
-func (p *ProxiedServicesInfo) AddPublicIPPortPair(ipportpair string) {
-	p.PublicIPPortPair = append(p.PublicIPPortPair, ipportpair)
-
-}
-
-// AddPrivateIPPortPair adds a private ip port pair
-func (p *ProxiedServicesInfo) AddPrivateIPPortPair(ipportpair string) {
-	p.PrivateIPPortPair = append(p.PrivateIPPortPair, ipportpair)
-
 }

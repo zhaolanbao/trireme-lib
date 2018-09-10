@@ -14,6 +14,9 @@ type PUPolicy struct {
 	managementID string
 	// triremeAction defines what level of policy should be applied to that container.
 	triremeAction PUAction
+	// dnsACLs is the list of DNS names and the associated ports that the container is
+	// allowed to talk to outside the data center
+	DNSACLs DNSRuleList
 	// applicationACLs is the list of ACLs to be applied when the container talks
 	// to IP Addresses outside the data center
 	applicationACLs IPRuleList
@@ -32,10 +35,10 @@ type PUPolicy struct {
 	ips ExtendedMap
 	// triremeNetworks is the list of networks that Authorization must be enforced
 	triremeNetworks []string
+	// triremeUDPNetworks is the list of UDP networks that this policy should apply to
+	triremeUDPNetworks []string
 	// excludedNetworks a list of networks that must be excluded
 	excludedNetworks []string
-	// ProxiedServices string format ip:port
-	proxiedServices *ProxiedServicesInfo
 	// exposedServices is the list of services that this PU is exposing.
 	exposedServices ApplicationServicesList
 	// dependentServices is the list of services that this PU depends on.
@@ -70,14 +73,15 @@ func NewPUPolicy(
 	action PUAction,
 	appACLs IPRuleList,
 	netACLs IPRuleList,
+	dnsACLs DNSRuleList,
 	txtags TagSelectorList,
 	rxtags TagSelectorList,
 	identity *TagStore,
 	annotations *TagStore,
 	ips ExtendedMap,
 	triremeNetworks []string,
+	triremeUDPNetworks []string,
 	excludedNetworks []string,
-	proxiedServices *ProxiedServicesInfo,
 	exposedServices ApplicationServicesList,
 	dependentServices ApplicationServicesList,
 	scopes []string,
@@ -88,6 +92,9 @@ func NewPUPolicy(
 	}
 	if netACLs == nil {
 		netACLs = IPRuleList{}
+	}
+	if dnsACLs == nil {
+		dnsACLs = DNSRuleList{}
 	}
 	if txtags == nil {
 		txtags = TagSelectorList{}
@@ -108,10 +115,6 @@ func NewPUPolicy(
 		ips = ExtendedMap{}
 	}
 
-	if proxiedServices == nil {
-		proxiedServices = &ProxiedServicesInfo{}
-	}
-
 	if exposedServices == nil {
 		exposedServices = ApplicationServicesList{}
 	}
@@ -121,27 +124,28 @@ func NewPUPolicy(
 	}
 
 	return &PUPolicy{
-		managementID:      id,
-		triremeAction:     action,
-		applicationACLs:   appACLs,
-		networkACLs:       netACLs,
-		transmitterRules:  txtags,
-		receiverRules:     rxtags,
-		identity:          identity,
-		annotations:       annotations,
-		ips:               ips,
-		triremeNetworks:   triremeNetworks,
-		excludedNetworks:  excludedNetworks,
-		proxiedServices:   proxiedServices,
-		exposedServices:   exposedServices,
-		dependentServices: dependentServices,
-		scopes:            scopes,
+		managementID:       id,
+		triremeAction:      action,
+		applicationACLs:    appACLs,
+		networkACLs:        netACLs,
+		DNSACLs:            dnsACLs,
+		transmitterRules:   txtags,
+		receiverRules:      rxtags,
+		identity:           identity,
+		annotations:        annotations,
+		ips:                ips,
+		triremeNetworks:    triremeNetworks,
+		triremeUDPNetworks: triremeUDPNetworks,
+		excludedNetworks:   excludedNetworks,
+		exposedServices:    exposedServices,
+		dependentServices:  dependentServices,
+		scopes:             scopes,
 	}
 }
 
 // NewPUPolicyWithDefaults sets up a PU policy with defaults
 func NewPUPolicyWithDefaults() *PUPolicy {
-	return NewPUPolicy("", AllowAll, nil, nil, nil, nil, nil, nil, nil, []string{}, []string{}, &ProxiedServicesInfo{}, nil, nil, []string{})
+	return NewPUPolicy("", AllowAll, nil, nil, nil, nil, nil, nil, nil, nil, []string{}, []string{}, []string{}, nil, nil, []string{})
 }
 
 // Clone returns a copy of the policy
@@ -154,14 +158,15 @@ func (p *PUPolicy) Clone() *PUPolicy {
 		p.triremeAction,
 		p.applicationACLs.Copy(),
 		p.networkACLs.Copy(),
+		p.DNSACLs.Copy(),
 		p.transmitterRules.Copy(),
 		p.receiverRules.Copy(),
 		p.identity.Copy(),
 		p.annotations.Copy(),
 		p.ips.Copy(),
 		p.triremeNetworks,
+		p.triremeUDPNetworks,
 		p.excludedNetworks,
-		p.proxiedServices,
 		p.exposedServices,
 		p.dependentServices,
 		p.scopes,
@@ -176,6 +181,14 @@ func (p *PUPolicy) ManagementID() string {
 	defer p.Unlock()
 
 	return p.managementID
+}
+
+// UDPNetworks returns the UDP networks
+func (p *PUPolicy) UDPNetworks() []string {
+	p.Lock()
+	defer p.Unlock()
+
+	return p.triremeUDPNetworks
 }
 
 // TriremeAction returns the TriremeAction
@@ -208,6 +221,14 @@ func (p *PUPolicy) NetworkACLs() IPRuleList {
 	defer p.Unlock()
 
 	return p.networkACLs.Copy()
+}
+
+// DNSNameACLs returns a copy of DNSRuleList
+func (p *PUPolicy) DNSNameACLs() DNSRuleList {
+	p.Lock()
+	defer p.Unlock()
+
+	return p.DNSACLs.Copy()
 }
 
 // ReceiverRules returns a copy of TagSelectorList
@@ -290,14 +311,6 @@ func (p *PUPolicy) TriremeNetworks() []string {
 	return p.triremeNetworks
 }
 
-// ProxiedServices returns the list of networks that Trireme must be applied
-func (p *PUPolicy) ProxiedServices() *ProxiedServicesInfo {
-	p.Lock()
-	defer p.Unlock()
-
-	return p.proxiedServices
-}
-
 // ExposedServices returns the exposed services
 func (p *PUPolicy) ExposedServices() ApplicationServicesList {
 	p.Lock()
@@ -323,6 +336,16 @@ func (p *PUPolicy) UpdateTriremeNetworks(networks []string) {
 
 	copy(p.triremeNetworks, networks)
 
+}
+
+// UpdateDNSNetworks updates the set of FQDN names allowed by the policy
+func (p *PUPolicy) UpdateDNSNetworks(networks DNSRuleList) {
+	p.Lock()
+	defer p.Unlock()
+
+	p.DNSACLs = make(DNSRuleList, len(networks))
+
+	copy(p.DNSACLs, networks)
 }
 
 // ExcludedNetworks returns the list of excluded networks.
@@ -378,14 +401,15 @@ func (p *PUPolicy) ToPublicPolicy() *PUPolicyPublic {
 		TriremeAction:       p.triremeAction,
 		ApplicationACLs:     p.applicationACLs.Copy(),
 		NetworkACLs:         p.networkACLs.Copy(),
+		DNSACLs:             p.DNSACLs.Copy(),
 		TransmitterRules:    p.transmitterRules.Copy(),
 		ReceiverRules:       p.receiverRules.Copy(),
 		Annotations:         p.annotations.Copy(),
 		Identity:            p.identity.Copy(),
 		IPs:                 p.ips.Copy(),
 		TriremeNetworks:     p.triremeNetworks,
+		TriremeUDPNetworks:  p.triremeUDPNetworks,
 		ExcludedNetworks:    p.excludedNetworks,
-		ProxiedServices:     p.proxiedServices,
 		ExposedServices:     p.exposedServices,
 		DependentServices:   p.dependentServices,
 		Scopes:              p.scopes,
@@ -402,14 +426,15 @@ type PUPolicyPublic struct {
 	TriremeAction       PUAction                `json:"triremeAction,omitempty"`
 	ApplicationACLs     IPRuleList              `json:"applicationACLs,omitempty"`
 	NetworkACLs         IPRuleList              `json:"networkACLs,omitempty"`
+	DNSACLs             DNSRuleList             `json:"dnsACLs,omitempty"`
 	Identity            *TagStore               `json:"identity,omitempty"`
 	Annotations         *TagStore               `json:"annotations,omitempty"`
 	TransmitterRules    TagSelectorList         `json:"transmitterRules,omitempty"`
 	ReceiverRules       TagSelectorList         `json:"receiverRules,omitempty"`
 	IPs                 ExtendedMap             `json:"IPs,omitempty"`
 	TriremeNetworks     []string                `json:"triremeNetworks,omitempty"`
+	TriremeUDPNetworks  []string                `json:"triremeUDPNetworks,omitempty"`
 	ExcludedNetworks    []string                `json:"excludedNetworks,omitempty"`
-	ProxiedServices     *ProxiedServicesInfo    `json:"proxiedServices,omitempty"`
 	ExposedServices     ApplicationServicesList `json:"exposedServices,omitempty"`
 	DependentServices   ApplicationServicesList `json:"dependentServices,omitempty"`
 	ServicesCertificate string                  `json:"servicesCertificate,omitempty"`
@@ -434,14 +459,15 @@ func (p *PUPolicyPublic) ToPrivatePolicy(convert bool) *PUPolicy {
 		triremeAction:       p.TriremeAction,
 		applicationACLs:     p.ApplicationACLs,
 		networkACLs:         p.NetworkACLs.Copy(),
+		DNSACLs:             p.DNSACLs.Copy(),
 		transmitterRules:    p.TransmitterRules.Copy(),
 		receiverRules:       p.ReceiverRules.Copy(),
 		annotations:         p.Annotations.Copy(),
 		identity:            p.Identity.Copy(),
 		ips:                 p.IPs.Copy(),
 		triremeNetworks:     p.TriremeNetworks,
+		triremeUDPNetworks:  p.TriremeUDPNetworks,
 		excludedNetworks:    p.ExcludedNetworks,
-		proxiedServices:     p.ProxiedServices,
 		exposedServices:     exposedServices,
 		dependentServices:   p.DependentServices,
 		scopes:              p.Scopes,

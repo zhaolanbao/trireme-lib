@@ -35,12 +35,12 @@ type trireme struct {
 }
 
 // New returns a trireme interface implementation based on configuration provided.
-func New(serverID string, opts ...Option) TriremeController {
+func New(serverID string, mode constants.ModeType, opts ...Option) TriremeController {
 
 	c := &config{
 		serverID:               serverID,
 		collector:              collector.NewDefaultCollector(),
-		mode:                   constants.RemoteContainer,
+		mode:                   mode,
 		fq:                     fqconfig.NewFilterQueueWithDefaults(),
 		mutualAuth:             true,
 		validity:               time.Hour * 8760,
@@ -143,6 +143,14 @@ func (t *trireme) UpdateConfiguration(networks []string) error {
 		}
 	}
 
+	for _, e := range t.enforcers {
+		err := e.SetTargetNetworks(networks)
+		if err != nil {
+			zap.L().Error("Failed to update target networks in supervisor")
+			failure = true
+		}
+	}
+
 	if failure {
 		return fmt.Errorf("Configuration update failed")
 	}
@@ -232,7 +240,9 @@ func (t *trireme) doUpdatePolicy(contextID string, newPolicy *policy.PUPolicy, r
 	if err := t.enforcers[t.puTypeToEnforcerType[containerInfo.Runtime.PUType()]].Enforce(contextID, containerInfo); err != nil {
 		//We lost communication with the remote and killed it lets restart it here by feeding a create event in the request channel
 		zap.L().Warn("Re-initializing enforcers - connection lost", zap.Error(err))
-		if containerInfo.Runtime.PUType() == common.ContainerPU {
+
+		isSidecar := t.puTypeToEnforcerType[containerInfo.Runtime.PUType()] == constants.Sidecar
+		if containerInfo.Runtime.PUType() == common.ContainerPU && !isSidecar {
 			//The unsupervise and unenforce functions just make changes to the proxy structures
 			//and do not depend on the remote instance running and can be called here
 			switch t.enforcers[t.puTypeToEnforcerType[containerInfo.Runtime.PUType()]].(type) {

@@ -9,7 +9,7 @@ import (
 	. "github.com/smartystreets/goconvey/convey"
 	"go.aporeto.io/trireme-lib/controller/constants"
 	"go.aporeto.io/trireme-lib/controller/internal/portset"
-	"go.aporeto.io/trireme-lib/controller/internal/supervisor/provider"
+	"go.aporeto.io/trireme-lib/controller/pkg/aclprovider"
 	"go.aporeto.io/trireme-lib/controller/pkg/fqconfig"
 	"go.aporeto.io/trireme-lib/policy"
 )
@@ -220,6 +220,49 @@ func TestAddPacketTrap(t *testing.T) {
 
 	Convey("Given an iptables controller, when I test addPacketTrap for Local Server", t, func() {
 		i, _ := NewInstance(fqconfig.NewFilterQueueWithDefaults(), constants.LocalServer, portset.New(nil))
+		iptables := provider.NewTestIptablesProvider()
+		i.ipt = iptables
+
+		Convey("When I add the packet trap rules and they succeed", func() {
+			iptables.MockAppend(t, func(table string, chain string, rulespec ...string) error {
+				return nil
+			})
+			err := i.addPacketTrap("appchain", "netchain", []string{"172.17.0.0/24"})
+			Convey("I should get no error", func() {
+				So(err, ShouldBeNil)
+			})
+		})
+
+		Convey("When I add the packet trap rules and the appPacketIPTableContext fails ", func() {
+			iptables.MockAppend(t, func(table string, chain string, rulespec ...string) error {
+				if table == i.appPacketIPTableContext {
+					return errors.New("error")
+				}
+				return nil
+			})
+			err := i.addPacketTrap("appchain", "netchain", []string{"172.17.0.0/24"})
+			Convey("I should get  error", func() {
+				So(err, ShouldNotBeNil)
+			})
+		})
+
+		Convey("When I add the packet trap rules and the netPacketIPtableContext fails ", func() {
+			iptables.MockAppend(t, func(table string, chain string, rulespec ...string) error {
+				if table == i.netPacketIPTableContext {
+					return errors.New("error")
+				}
+				return nil
+			})
+			err := i.addPacketTrap("appchain", "netchain", []string{"172.17.0.0/24"})
+			Convey("I should get  error", func() {
+				So(err, ShouldNotBeNil)
+			})
+		})
+
+	})
+
+	Convey("Given an iptables controller, when I test addPacketTrap for sidecar container", t, func() {
+		i, _ := NewInstance(fqconfig.NewFilterQueueWithDefaults(), constants.Sidecar, portset.New(nil))
 		iptables := provider.NewTestIptablesProvider()
 		i.ipt = iptables
 
