@@ -237,17 +237,7 @@ func dataprocessor(ctx context.Context, source, dest net.Conn) { // nolint
 		}
 	}()
 
-	if _, err := io.Copy(dest, readwithContext(
-		func(p []byte) (int, error) {
-			select {
-			case <-ctx.Done():
-				return 0, ctx.Err()
-			default:
-				return source.Read(p)
-			}
-		},
-	),
-	); err != nil { // nolint
+	if _, err := io.Copy(dest, source); err != nil { // nolint
 		logErr(err)
 	}
 }
