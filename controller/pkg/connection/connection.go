@@ -214,12 +214,13 @@ func (c *TCPConnection) IsLoopbackConnection() bool {
 }
 
 // NewTCPConnection returns a TCPConnection information struct
-func NewTCPConnection(context *pucontext.PUContext) *TCPConnection {
+func NewTCPConnection(context *pucontext.PUContext, p *packet.Packet) *TCPConnection {
 
 	nonce, err := crypto.GenerateRandomBytes(16)
 	if err != nil {
 		return nil
 	}
+
 	return &TCPConnection{
 		state:   TCPSynSend,
 		Context: context,
@@ -384,8 +385,8 @@ func (c *UDPConnection) SetState(state UDPFlowState) {
 // QueuePackets queues UDP packets till the flow is authenticated.
 func (c *UDPConnection) QueuePackets(udpPacket *packet.Packet) (err error) {
 
-	buffer := make([]byte, len(udpPacket.Buffer))
-	copy(buffer, udpPacket.Buffer)
+	buffer := make([]byte, len(udpPacket.GetBuffer(0)))
+	copy(buffer, udpPacket.GetBuffer(0))
 
 	copyPacket, err := packet.New(packet.PacketTypeApplication, buffer, udpPacket.Mark, true)
 	if err != nil {
