@@ -91,7 +91,6 @@ func (d *DockerMonitor) SetupConfig(registerer registerer.Registerer, cfg interf
 	d.addHandler(EventDestroy, d.handleDestroyEvent)
 	d.addHandler(EventPause, d.handlePauseEvent)
 	d.addHandler(EventUnpause, d.handleUnpauseEvent)
-
 	return nil
 }
 

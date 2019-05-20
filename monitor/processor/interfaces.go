@@ -27,4 +27,7 @@ type Processor interface {
 
 	// Resync resyncs all PUs handled by this processor
 	Resync(ctx context.Context, EventInfo *common.EventInfo) error
+
+	// ChangeMode allows an existing PU to request more privelges
+	Update(ctx context.Context, EventInfo *common.EventInfo) error
 }

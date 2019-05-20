@@ -20,6 +20,9 @@ const (
 	UIDLoginPU
 	// SSHSessionPU -- PU representing a ssh session
 	SSHSessionPU
+
+	// // SudoSessionPU -- PU representing a sudo session
+	SudoSessionPU
 	// TransientPU PU -- placeholder to run processing. This should not
 	// be inserted in any cache. This is valid only for processing a packet
 	TransientPU

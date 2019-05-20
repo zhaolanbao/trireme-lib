@@ -232,6 +232,23 @@ func (l *linuxProcessor) resyncHostService(ctx context.Context, e *common.EventI
 	return l.processHostServiceStart(e, runtime)
 }
 
+func (l *linuxProcessor) Update(ctx context.Context, eventInfo *common.EventInfo) error {
+	//
+	// Validate the PUID format. Additional validations TODO
+	if !l.regStart.Match([]byte(eventInfo.PUID)) {
+		return fmt.Errorf("invalid pu id: %s", eventInfo.PUID)
+	}
+
+	// Normalize to a nativeID context. This will become key for any recoveries
+	// and it's an one way function.
+	nativeID, err := l.generateContextID(eventInfo)
+	if err != nil {
+		return err
+	}
+	runtime := policy.NewPURuntimeWithDefaults()
+	return l.config.Policy.HandlePUEvent(ctx, nativeID, common.EventUpdate, runtime)
+}
+
 // Resync resyncs with all the existing services that were there before we start
 func (l *linuxProcessor) Resync(ctx context.Context, e *common.EventInfo) error {
 

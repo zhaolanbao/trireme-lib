@@ -84,6 +84,11 @@ func (c *cniProcessor) Resync(ctx context.Context, e *common.EventInfo) error {
 	return nil
 }
 
+// ChangeMode allows an existing PU to request more privelges
+func (c *cniProcessor) Update(ctx context.Context, EventInfo *common.EventInfo) error {
+	return nil
+}
+
 // generateContextID creates the contextID from the event information
 func generateContextID(eventInfo *common.EventInfo) (string, error) {
 

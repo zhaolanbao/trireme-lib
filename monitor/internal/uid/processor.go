@@ -142,6 +142,10 @@ func (u *uidProcessor) Destroy(ctx context.Context, eventInfo *common.EventInfo)
 	return nil
 }
 
+func (u *uidProcessor) Update(ctx context.Context, EventInfo *common.EventInfo) error {
+	return nil
+}
+
 // Pause handles a pause event
 func (u *uidProcessor) Pause(ctx context.Context, eventInfo *common.EventInfo) error {
 

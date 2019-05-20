@@ -36,7 +36,7 @@ func (r *registerer) RegisterProcessor(puType common.PUType, ep processor.Proces
 	r.addHandler(puType, common.EventDestroy, ep.Destroy)
 	r.addHandler(puType, common.EventPause, ep.Pause)
 	r.addHandler(puType, common.EventResync, ep.Resync)
-
+	r.addHandler(puType, common.EventUpdate, ep.Update)
 	return nil
 }
 
