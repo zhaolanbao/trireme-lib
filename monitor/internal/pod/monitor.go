@@ -10,12 +10,12 @@ import (
 	"go.aporeto.io/trireme-lib/monitor/extractors"
 	"go.aporeto.io/trireme-lib/monitor/registerer"
 
-	"k8s.io/client-go/rest"
-	"k8s.io/client-go/tools/clientcmd"
+	"github.com/kubernetes/client-go/rest"
+	"github.com/kubernetes/client-go/tools/clientcmd"
 
-	"sigs.k8s.io/controller-runtime/pkg/client"
-	"sigs.k8s.io/controller-runtime/pkg/event"
-	"sigs.k8s.io/controller-runtime/pkg/manager"
+	"github.com/kubernetes-sigs/controller-runtime/pkg/client"
+	"github.com/kubernetes-sigs/controller-runtime/pkg/event"
+	"github.com/kubernetes-sigs/controller-runtime/pkg/manager"
 )
 
 // PodMonitor implements a monitor that sends pod events upstream

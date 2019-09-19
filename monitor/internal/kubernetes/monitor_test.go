@@ -7,8 +7,8 @@ import (
 	"go.aporeto.io/trireme-lib/monitor/extractors"
 	dockermonitor "go.aporeto.io/trireme-lib/monitor/internal/docker"
 	"go.aporeto.io/trireme-lib/monitor/registerer"
-	"k8s.io/client-go/kubernetes"
-	kubecache "k8s.io/client-go/tools/cache"
+	"github.com/kubernetes/client-go/kubernetes"
+	kubecache "github.com/kubernetes/client-go/tools/cache"
 )
 
 func TestKubernetesMonitor_SetupConfig(t *testing.T) {

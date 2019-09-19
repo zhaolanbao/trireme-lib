@@ -7,11 +7,11 @@ import (
 	"go.aporeto.io/trireme-lib/monitor/config"
 	"go.aporeto.io/trireme-lib/monitor/extractors"
 	dockermonitor "go.aporeto.io/trireme-lib/monitor/internal/docker"
-	api "k8s.io/api/core/v1"
-	kubefields "k8s.io/apimachinery/pkg/fields"
-	"k8s.io/client-go/kubernetes"
-	kubefake "k8s.io/client-go/kubernetes/fake"
-	kubecache "k8s.io/client-go/tools/cache"
+	api "github.com/kubernetes/core/v1"
+	kubefields "github.com/kubernetes/apimachinery/pkg/fields"
+	"github.com/kubernetes/client-go/kubernetes"
+	kubefake "github.com/kubernetes/client-go/kubernetes/fake"
+	kubecache "github.com/kubernetes/client-go/tools/cache"
 )
 
 func TestNewKubeClient(t *testing.T) {

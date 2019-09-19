@@ -8,7 +8,7 @@ import (
 	"go.aporeto.io/trireme-lib/monitor/constants"
 	"go.aporeto.io/trireme-lib/policy"
 	"go.uber.org/zap"
-	api "k8s.io/api/core/v1"
+	api "github.com/kubernetes/core/v1"
 )
 
 // General logic for handling logic fron the DockerMonitor ss the following:

@@ -5,10 +5,10 @@ import (
 	"errors"
 	"fmt"
 
-	corev1 "k8s.io/api/core/v1"
+	corev1 "github.com/kubernetes/core/v1"
 
-	"sigs.k8s.io/controller-runtime/pkg/client"
-	"sigs.k8s.io/controller-runtime/pkg/event"
+	"github.com/kubernetes-sigs/controller-runtime/pkg/client"
+	"github.com/kubernetes-sigs/controller-runtime/pkg/event"
 )
 
 // ResyncWithAllPods is called from the implemented resync, it will list all pods

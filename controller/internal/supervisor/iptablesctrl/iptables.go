@@ -9,7 +9,7 @@ import (
 	"net"
 	"text/template"
 
-	"github.com/aporeto-inc/go-ipset/ipset"
+	"github.com/zhaolanbao/go-ipset/ipset"
 	"github.com/spaolacci/murmur3"
 	"go.aporeto.io/trireme-lib/buildflags"
 	"go.aporeto.io/trireme-lib/common"

@@ -16,15 +16,15 @@ import (
 	"go.aporeto.io/trireme-lib/policy"
 	"go.aporeto.io/trireme-lib/policy/mockpolicy"
 
-	corev1 "k8s.io/api/core/v1"
-	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
-	"k8s.io/apimachinery/pkg/runtime"
-	"k8s.io/apimachinery/pkg/types"
-	"k8s.io/client-go/kubernetes/scheme"
+	corev1 "github.com/kubernetes/core/v1"
+	metav1 "github.com/kubernetes/apimachinery/pkg/apis/meta/v1"
+	"github.com/kubernetes/apimachinery/pkg/runtime"
+	"github.com/kubernetes/apimachinery/pkg/types"
+	"github.com/kubernetes/client-go/kubernetes/scheme"
 
-	"sigs.k8s.io/controller-runtime/pkg/client"
-	fakeclient "sigs.k8s.io/controller-runtime/pkg/client/fake"
-	"sigs.k8s.io/controller-runtime/pkg/reconcile"
+	"github.com/kubernetes-sigs/controller-runtime/pkg/client"
+	fakeclient "github.com/kubernetes-sigs/controller-runtime/pkg/client/fake"
+	"github.com/kubernetes-sigs/controller-runtime/pkg/reconcile"
 )
 
 // TODO: should be a mock, but how to create it? we don't even vendor in tireme-lib

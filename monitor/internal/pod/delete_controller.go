@@ -9,10 +9,10 @@ import (
 	"go.aporeto.io/trireme-lib/monitor/extractors"
 	"go.aporeto.io/trireme-lib/policy"
 	"go.uber.org/zap"
-	corev1 "k8s.io/api/core/v1"
-	"k8s.io/apimachinery/pkg/api/errors"
-	"sigs.k8s.io/controller-runtime/pkg/client"
-	"sigs.k8s.io/controller-runtime/pkg/event"
+	corev1 "github.com/kubernetes/core/v1"
+	"github.com/kubernetes/apimachinery/pkg/api/errors"
+	"github.com/kubernetes-sigs/controller-runtime/pkg/client"
+	"github.com/kubernetes-sigs/controller-runtime/pkg/event"
 )
 
 // deleteControllerReconcileFunc is the reconciler function signature for the DeleteController

@@ -5,7 +5,7 @@ import (
 	"net"
 	"strings"
 
-	"github.com/aporeto-inc/go-ipset/ipset"
+	"github.com/zhaolanbao/go-ipset/ipset"
 	provider "go.aporeto.io/trireme-lib/controller/pkg/aclprovider"
 )
 

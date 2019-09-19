@@ -5,7 +5,7 @@ import (
 	"os/exec"
 	"strings"
 
-	"github.com/aporeto-inc/go-ipset/ipset"
+	"github.com/zhaolanbao/go-ipset/ipset"
 	"go.uber.org/zap"
 )
 

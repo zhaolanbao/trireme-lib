@@ -6,10 +6,10 @@ import (
 	"go.aporeto.io/trireme-lib/common"
 	"go.aporeto.io/trireme-lib/policy"
 
-	corev1 "k8s.io/api/core/v1"
-	"k8s.io/apimachinery/pkg/runtime"
+	corev1 "github.com/kubernetes/core/v1"
+	"github.com/kubernetes/apimachinery/pkg/runtime"
 
-	"sigs.k8s.io/controller-runtime/pkg/client"
+	"github.com/kubernetes-sigs/controller-runtime/pkg/client"
 )
 
 // EventMetadataExtractor is a function used to extract a *policy.PURuntime from a given

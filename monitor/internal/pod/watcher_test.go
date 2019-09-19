@@ -5,9 +5,9 @@ import (
 
 	. "github.com/smartystreets/goconvey/convey"
 
-	corev1 "k8s.io/api/core/v1"
-	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
-	"sigs.k8s.io/controller-runtime/pkg/handler"
+	corev1 "github.com/kubernetes/core/v1"
+	metav1 "github.com/kubernetes/apimachinery/pkg/apis/meta/v1"
+	"github.com/kubernetes-sigs/controller-runtime/pkg/handler"
 )
 
 func TestWatchPodMapper(t *testing.T) {

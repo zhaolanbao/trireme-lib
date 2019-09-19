@@ -5,7 +5,7 @@ import (
 	errs "errors"
 	"time"
 
-	"k8s.io/client-go/tools/record"
+	"github.com/kubernetes/client-go/tools/record"
 
 	"go.aporeto.io/trireme-lib/common"
 	"go.aporeto.io/trireme-lib/monitor/config"
@@ -13,17 +13,17 @@ import (
 	"go.aporeto.io/trireme-lib/policy"
 	"go.uber.org/zap"
 
-	corev1 "k8s.io/api/core/v1"
-	"k8s.io/apimachinery/pkg/api/errors"
-	"k8s.io/apimachinery/pkg/runtime"
+	corev1 "github.com/kubernetes/core/v1"
+	"github.com/kubernetes/apimachinery/pkg/api/errors"
+	"github.com/kubernetes/apimachinery/pkg/runtime"
 
-	"sigs.k8s.io/controller-runtime/pkg/client"
-	"sigs.k8s.io/controller-runtime/pkg/controller"
-	"sigs.k8s.io/controller-runtime/pkg/event"
-	"sigs.k8s.io/controller-runtime/pkg/handler"
-	"sigs.k8s.io/controller-runtime/pkg/manager"
-	"sigs.k8s.io/controller-runtime/pkg/reconcile"
-	"sigs.k8s.io/controller-runtime/pkg/source"
+	"github.com/kubernetes-sigs/controller-runtime/pkg/client"
+	"github.com/kubernetes-sigs/controller-runtime/pkg/controller"
+	"github.com/kubernetes-sigs/controller-runtime/pkg/event"
+	"github.com/kubernetes-sigs/controller-runtime/pkg/handler"
+	"github.com/kubernetes-sigs/controller-runtime/pkg/manager"
+	"github.com/kubernetes-sigs/controller-runtime/pkg/reconcile"
+	"github.com/kubernetes-sigs/controller-runtime/pkg/source"
 )
 
 var (

@@ -6,7 +6,7 @@ import (
 
 	"go.aporeto.io/trireme-lib/policy"
 	"go.uber.org/zap"
-	api "k8s.io/api/core/v1"
+	api "github.com/kubernetes/core/v1"
 )
 
 // KubernetesPodNameIdentifier is the label used by Docker for the K8S pod name.

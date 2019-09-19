@@ -12,13 +12,13 @@ import (
 	"go.aporeto.io/trireme-lib/monitor/config"
 	"go.aporeto.io/trireme-lib/monitor/extractors"
 	"go.aporeto.io/trireme-lib/policy/mockpolicy"
-	corev1 "k8s.io/api/core/v1"
-	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
-	"k8s.io/apimachinery/pkg/types"
+	corev1 "github.com/kubernetes/core/v1"
+	metav1 "github.com/kubernetes/apimachinery/pkg/apis/meta/v1"
+	"github.com/kubernetes/apimachinery/pkg/types"
 
-	"sigs.k8s.io/controller-runtime/pkg/client"
-	fakeclient "sigs.k8s.io/controller-runtime/pkg/client/fake"
-	"sigs.k8s.io/controller-runtime/pkg/event"
+	"github.com/kubernetes-sigs/controller-runtime/pkg/client"
+	fakeclient "github.com/kubernetes-sigs/controller-runtime/pkg/client/fake"
+	"github.com/kubernetes-sigs/controller-runtime/pkg/event"
 )
 
 func TestDeleteControllerFunctionality(t *testing.T) {

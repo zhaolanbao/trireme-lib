@@ -5,9 +5,9 @@ import (
 	"time"
 
 	"go.uber.org/zap"
-	api "k8s.io/api/core/v1"
-	"k8s.io/apimachinery/pkg/labels"
-	kubecache "k8s.io/client-go/tools/cache"
+	api "github.com/kubernetes/core/v1"
+	"github.com/kubernetes/apimachinery/pkg/labels"
+	kubecache "github.com/kubernetes/client-go/tools/cache"
 )
 
 // KubernetesPodNameIdentifier is the label used by Docker for the K8S pod name.

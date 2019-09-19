@@ -6,9 +6,9 @@ import (
 	. "github.com/smartystreets/goconvey/convey"
 
 	"go.aporeto.io/trireme-lib/policy"
-	api "k8s.io/api/core/v1"
-	corev1 "k8s.io/api/core/v1"
-	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	api "github.com/kubernetes/core/v1"
+	corev1 "github.com/kubernetes/core/v1"
+	metav1 "github.com/kubernetes/apimachinery/pkg/apis/meta/v1"
 )
 
 func TestDefaultKubernetesMetadataExtractor(t *testing.T) {

@@ -4,7 +4,7 @@ import (
 	"sync"
 	"testing"
 
-	"github.com/aporeto-inc/go-ipset/ipset"
+	"github.com/zhaolanbao/go-ipset/ipset"
 )
 
 type ipsetProviderMockedMethods struct {

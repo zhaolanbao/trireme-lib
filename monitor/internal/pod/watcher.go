@@ -1,11 +1,11 @@
 package podmonitor
 
 import (
-	corev1 "k8s.io/api/core/v1"
-	"k8s.io/apimachinery/pkg/types"
-	"sigs.k8s.io/controller-runtime/pkg/client"
-	"sigs.k8s.io/controller-runtime/pkg/handler"
-	"sigs.k8s.io/controller-runtime/pkg/reconcile"
+	corev1 "github.com/kubernetes/core/v1"
+	"github.com/kubernetes/apimachinery/pkg/types"
+	"github.com/kubernetes-sigs/controller-runtime/pkg/client"
+	"github.com/kubernetes-sigs/controller-runtime/pkg/handler"
+	"github.com/kubernetes-sigs/controller-runtime/pkg/reconcile"
 )
 
 // WatchPodMapper determines if we want to reconcile on a pod event. There are two limitiations:

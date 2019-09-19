@@ -11,10 +11,10 @@ import (
 	"go.aporeto.io/trireme-lib/monitor/extractors"
 	dockermonitor "go.aporeto.io/trireme-lib/monitor/internal/docker"
 	"go.aporeto.io/trireme-lib/policy"
-	api "k8s.io/api/core/v1"
-	"k8s.io/client-go/kubernetes"
-	kubefake "k8s.io/client-go/kubernetes/fake"
-	kubecache "k8s.io/client-go/tools/cache"
+	api "github.com/kubernetes/core/v1"
+	"github.com/kubernetes/client-go/kubernetes"
+	kubefake "github.com/kubernetes/client-go/kubernetes/fake"
+	kubecache "github.com/kubernetes/client-go/tools/cache"
 )
 
 func Test_getKubernetesInformation(t *testing.T) {

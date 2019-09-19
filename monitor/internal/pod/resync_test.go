@@ -6,11 +6,11 @@ import (
 
 	. "github.com/smartystreets/goconvey/convey"
 
-	corev1 "k8s.io/api/core/v1"
-	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	corev1 "github.com/kubernetes/core/v1"
+	metav1 "github.com/kubernetes/apimachinery/pkg/apis/meta/v1"
 
-	fakeclient "sigs.k8s.io/controller-runtime/pkg/client/fake"
-	"sigs.k8s.io/controller-runtime/pkg/event"
+	fakeclient "github.com/kubernetes-sigs/controller-runtime/pkg/client/fake"
+	"github.com/kubernetes-sigs/controller-runtime/pkg/event"
 )
 
 func TestResyncWithAllPods(t *testing.T) {
