@@ -14,6 +14,7 @@ import (
 	"go.aporeto.io/trireme-lib/controller/pkg/secrets"
 	"go.aporeto.io/trireme-lib/controller/pkg/urisearch"
 	"go.aporeto.io/trireme-lib/policy"
+	"go.uber.org/zap"
 )
 
 // ServiceContext includes all the all the service related information
@@ -139,7 +140,7 @@ func (r *Registry) RetrieveServiceByID(id string) (*ServiceContext, error) {
 func (r *Registry) RetrieveExposedServiceContext(ip net.IP, port int, host string) (*PortContext, error) {
 	r.Lock()
 	defer r.Unlock()
-
+	zap.L().Info("RETRIEVECONTEXT", zap.Reflect("ip", ip), zap.Reflect("port", port), zap.Reflect("host", host))
 	data := r.indexByPort.Find(ip, port, host, true)
 	if data == nil {
 		return nil, fmt.Errorf("Service information not found: %s %d %s", ip.String(), port, host)
@@ -147,7 +148,7 @@ func (r *Registry) RetrieveExposedServiceContext(ip net.IP, port int, host strin
 
 	portContext, ok := data.(*PortContext)
 	if !ok {
-		return nil, fmt.Errorf("Internal server error")
+		return nil, fmt.Errorf("Internal server error - No portcontext found")
 	}
 
 	return portContext, nil

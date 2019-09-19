@@ -184,6 +184,7 @@ func (p *Config) RunNetworkServer(ctx context.Context, l net.Listener, encrypted
 		}
 		pctx, err := p.registry.RetrieveExposedServiceContext(raddr.IP, raddr.Port, "")
 		if err != nil {
+			zap.L().Info("ERROR IN APP DIAL WITH CONTEXT")
 			return nil, err
 		}
 		raddr.Port = pctx.TargetPort
@@ -218,6 +219,7 @@ func (p *Config) RunNetworkServer(ctx context.Context, l net.Listener, encrypted
 		}
 		pctx, err := p.registry.RetrieveExposedServiceContext(raddr.IP, raddr.Port, "")
 		if err != nil {
+			zap.L().Info("ERROR IN APP DIAL")
 			return nil, err
 		}
 		raddr.Port = pctx.TargetPort
